@@ -16,35 +16,19 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
     npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+# Демонстрація роботи додатку
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+1. Головна
+![image](https://github.com/user-attachments/assets/62552838-1ba7-4db0-9511-913c12f66270)  
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+2. Галерея
+![image](https://github.com/user-attachments/assets/2ecfa0ae-1227-4ca6-908e-abbf02ba3950)
 
-## Get a fresh project
+3. Профіль
+![image](https://github.com/user-attachments/assets/df112b91-aefa-404e-9734-12588f6e9512)
 
-When you're ready, run:
+## Примітка  
+Маю проблеми із запуском емулятора через Android Studio або через фізичний пристрій, тому використовую веб емулятор.
 
-```bash
-npm run reset-project
-```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
