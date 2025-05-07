@@ -1,8 +1,20 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Tabs } from 'expo-router';
 import { ComponentProps } from 'react';
+import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TasksProvider } from '../context/TasksContext';
+
+const colors = {
+  minecraftGreen: '#728F46',
+  minecraftBrown: '#8B572A',
+  minecraftGray: '#A0A0A0',
+  minecraftBlue: '#6495ED',
+  minecraftLightBlue: '#ADD8E6',
+  minecraftDarkGreen: '#556B2F',
+  minecraftStone: '#8B8680',
+  minecraftDirt: '#8B4513',
+};
 
 function TabLayout() {
   return (
@@ -19,28 +31,30 @@ function TabLayout() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'blue',
-        tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          backgroundColor: '#f0f0f0',
-        },
+        tabBarActiveTintColor: colors.minecraftGreen,
+        tabBarInactiveTintColor: colors.minecraftGray,
         tabBarLabelStyle: {
-          fontSize: 12,
+        },
+        tabBarStyle: {
+          backgroundColor: colors.minecraftBrown,
+          height: 70,
+          paddingBottom: 10,
+          borderTopWidth: 0,
         },
       })}
     >
       <Tabs.Screen
         name='index'
         options={{
-          title: 'Гра',
-          headerShown: false,
+          title: 'Minecraft Clicker',
+          headerShown: false, 
         }}
       />
       <Tabs.Screen
         name='tasks'
         options={{
           title: 'Завдання',
-          headerShown: false,
+          headerShown: false, 
         }}
       />
     </Tabs>
@@ -49,10 +63,16 @@ function TabLayout() {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={styles.container}>
       <TasksProvider>
         <TabLayout />
       </TasksProvider>
     </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});

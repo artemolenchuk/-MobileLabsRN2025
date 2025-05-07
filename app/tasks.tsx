@@ -1,18 +1,24 @@
 import React from 'react';
-import { FlatList, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { TaskItem } from '../components/TaskItem';
 import { useTasks } from '../context/TasksContext';
+import { Task } from '../types/index';
 
 export default function TasksScreen() {
   const { tasks } = useTasks();
 
-  const renderItem = ({ item }: { item: any }) => (
+  // Раніше тут був useEffect з console.log, тепер його немає.
+  // useEffect(() => {
+  //   console.log('Завдання в TasksScreen:', tasks);
+  // }, [tasks]);
+
+  const renderItem = ({ item }: { item: Task }) => (
     <TaskItem task={item} />
   );
 
   return (
-    <View style={{ flex: 1, padding: 10 }}>
-      <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>Ваше Завдання</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Ваші Завдання</Text>
       <FlatList
         data={tasks}
         renderItem={renderItem}
@@ -21,3 +27,16 @@ export default function TasksScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+});
