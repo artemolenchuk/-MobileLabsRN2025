@@ -53,6 +53,8 @@ export default function GameScreen() {
 
   const singleTap = Gesture.Tap()
     .numberOfTaps(1)
+    .maxDuration(250)
+    .maxDelay(200)
     .onEnd((_event, success) => {
       if (!success) return;
 
@@ -62,6 +64,8 @@ export default function GameScreen() {
 
   const doubleTap = Gesture.Tap()
     .numberOfTaps(2)
+    .maxDuration(300)
+    .maxDelay(250) 
     .onEnd((_event, success) => {
       if (!success) return;
 
@@ -85,11 +89,11 @@ export default function GameScreen() {
     })
     .onChange(event => {
       const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-      const objectWidth = 170; 
-      const objectHeight = 170; 
+      const objectWidth = 170;
+      const objectHeight = 170;
 
       const maxX = screenWidth / 2 - objectWidth / 2;
-      const maxY = screenHeight / 2 - objectHeight / 2 - 150 
+      const maxY = screenHeight / 2 - objectHeight / 2 - 150
 
       const newTranslateX = startX.value + event.translationX;
       const newTranslateY = startY.value + event.translationY;
