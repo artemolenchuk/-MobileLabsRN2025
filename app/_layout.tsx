@@ -34,6 +34,7 @@ function TabLayout() {
         tabBarActiveTintColor: colors.minecraftGreen,
         tabBarInactiveTintColor: colors.minecraftGray,
         tabBarLabelStyle: {
+
         },
         tabBarStyle: {
           backgroundColor: colors.minecraftBrown,

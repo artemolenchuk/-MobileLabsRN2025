@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ImageBackground, StyleSheet, Text } from 'react-native';
+import { Dimensions, ImageBackground, StyleSheet, Text } from 'react-native';
 import {
   Directions,
   Gesture,
@@ -84,8 +84,18 @@ export default function GameScreen() {
       startY.value = translateY.value;
     })
     .onChange(event => {
-      translateX.value = startX.value + event.translationX;
-      translateY.value = startY.value + event.translationY;
+      const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+      const objectWidth = 170; 
+      const objectHeight = 170; 
+
+      const maxX = screenWidth / 2 - objectWidth / 2;
+      const maxY = screenHeight / 2 - objectHeight / 2 - 150 
+
+      const newTranslateX = startX.value + event.translationX;
+      const newTranslateY = startY.value + event.translationY;
+
+      translateX.value = Math.max(-maxX, Math.min(newTranslateX, maxX));
+      translateY.value = Math.max(-maxY, Math.min(newTranslateY, maxY));
     })
     .onEnd((event, success) => {
       if (success) {
@@ -144,7 +154,7 @@ export default function GameScreen() {
     pan,
     pinch,
     flingLeft,
-    flingRight 
+    flingRight
   );
 
   const animatedStyle = useAnimatedStyle(() => {
