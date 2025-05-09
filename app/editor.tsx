@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
   TextInput,
   ScrollView,
   ActivityIndicator,
@@ -10,6 +11,50 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
+import { Feather } from '@expo/vector-icons';
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f4f4f4',
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    padding: 15,
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    color: '#e74c3c',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  headerButton: {
+    paddingHorizontal: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  textInput: {
+    flex: 1,
+    minHeight: 300,
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    fontSize: 16,
+    backgroundColor: '#fff',
+    textAlignVertical: 'top',
+  },
+});
 
 export default function EditorScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -59,16 +104,13 @@ export default function EditorScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={handleSaveFile}>
-          <Text>Зберегти</Text>
+        <TouchableOpacity onPress={handleSaveFile} style={styles.headerButton}>
+          <Feather name="save" size={18} color="#fff" style={{ marginRight: 5 }} />
+          <Text style={styles.headerButtonText}>Зберегти</Text>
         </TouchableOpacity>
       ),
-      headerStyle: { backgroundColor: 'gray' },
-      headerTintColor: '#fff',
-      headerTitleStyle: { fontWeight: 'bold', fontSize: 20 },
-      title: fileName || 'Редактор',
     });
-  }, [navigation, handleSaveFile, fileName]);
+  }, [navigation, handleSaveFile]);
 
   const handleTextChange = (text: string) => {
     setFileContent(text);
@@ -76,24 +118,25 @@ export default function EditorScreen() {
 
   if (isLoading) {
     return (
-      <View>
+      <View style={styles.centered}>
         <ActivityIndicator size="large" color="#3498db" />
-        <Text>Завантаження файлу...</Text>
+        <Text style={{ marginTop: 10, color: '#777' }}>Завантаження файлу...</Text>
       </View>
     );
   }
 
   if (error) {
     return (
-      <View>
-        <Text>{error}</Text>
+      <View style={styles.centered}>
+        <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContentContainer}>
       <TextInput
+        style={styles.textInput}
         value={fileContent}
         onChangeText={handleTextChange}
         multiline={true}

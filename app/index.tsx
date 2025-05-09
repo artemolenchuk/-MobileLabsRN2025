@@ -2,14 +2,16 @@ import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
+  StyleSheet,
+  ActivityIndicator,
   FlatList,
   TouchableOpacity,
   ListRenderItemInfo,
   Modal,
   TextInput,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as FileSystem from 'expo-file-system';
@@ -22,6 +24,121 @@ type FileSystemItem = {
   uri: string;
   isDirectory: boolean;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  headerContainer: {
+    backgroundColor: '#f4f4f4',
+    paddingHorizontal: 15,
+    paddingTop: 15,
+    paddingBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  pathText: {
+    fontSize: 16,
+    color: '#555',
+  },
+  listItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  itemInfo: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 15,
+    fontSize: 24,
+    color: '#777',
+  },
+  itemName: {
+    fontSize: 16,
+    color: '#333',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 50,
+    color: '#777',
+    fontSize: 16,
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    backgroundColor: '#3498db',
+    borderRadius: 28,
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
+  },
+  fabIcon: {
+    fontSize: 24,
+    color: '#fff',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'stretch',
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 20,
+    fontSize: 16,
+    backgroundColor: '#f9f9f9',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    borderRadius: 5,
+    paddingVertical: 10,
+    alignItems: 'center',
+  },
+  modalButtonCancel: {
+    backgroundColor: '#bdc3c7',
+    marginRight: 5,
+  },
+  modalButtonCreate: {
+    backgroundColor: '#27ae60',
+    marginLeft: 5,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+});
 
 export default function FileManagerScreen() {
   const insets = useSafeAreaInsets();
@@ -39,7 +156,7 @@ export default function FileManagerScreen() {
       const detailedItems: FileSystemItem[] = items.map(item => ({
         name: item,
         uri: path + item,
-        isDirectory: (item.endsWith('/')),
+        isDirectory: (item.endsWith('/')), // Просте визначення папки
       }));
       setDirectoryContent(detailedItems);
       setCurrentPath(path);
@@ -99,26 +216,23 @@ export default function FileManagerScreen() {
   }, [currentPath, isCreatingFolder, newItemName, loadDirectoryContent]);
 
   const renderListItem = ({ item }: ListRenderItemInfo<FileSystemItem>) => (
-    <TouchableOpacity onPress={() => handleItemPress(item)}>
-      <View>
-        <Text>{item.isDirectory ? '[ПАПКА]' : '[ФАЙЛ]'}</Text>
-        <Text>{item.name}</Text>
+    <TouchableOpacity onPress={() => handleItemPress(item)} style={styles.listItem}>
+      <View style={styles.itemInfo}>
+        <Feather
+          name={item.isDirectory ? 'folder' : 'file-text'}
+          size={24}
+          color={item.isDirectory ? '#f1c40f' : '#3498db'}
+          style={styles.icon}
+        />
+        <Text style={styles.itemName}>{item.name}</Text>
       </View>
     </TouchableOpacity>
   );
 
   return (
-    <View style={{ flex: 1, paddingTop: insets.top }}>
-      <View>
-        <Text>Розташування: {currentPath.replace(FileSystem.documentDirectory || '', '')}</Text>
-        <View>
-          <TouchableOpacity onPress={() => openCreateModal(false)}>
-            <Text>[+ФАЙЛ]</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => openCreateModal(true)}>
-            <Text>[+ПАПКА]</Text>
-          </TouchableOpacity>
-        </View>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.pathText}>Розташування: {currentPath.replace(FileSystem.documentDirectory || '', '')}</Text>
       </View>
 
       {isLoading ? (
@@ -130,10 +244,17 @@ export default function FileManagerScreen() {
           data={directoryContent}
           renderItem={renderListItem}
           keyExtractor={(item) => item.uri}
-          ListEmptyComponent={<Text>Ця папка порожня</Text>}
+          ListEmptyComponent={<Text style={styles.emptyText}>Ця папка порожня</Text>}
           style={{ flex: 1 }}
         />
       )}
+
+      <TouchableOpacity onPress={() => openCreateModal(false)} style={[styles.fab, { marginLeft: 0 }]}>
+        <Feather name="file-plus" style={styles.fabIcon} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => openCreateModal(true)} style={styles.fab}>
+        <Feather name="folder-plus" style={styles.fabIcon} />
+      </TouchableOpacity>
 
       <Modal
         animationType="slide"
@@ -141,24 +262,31 @@ export default function FileManagerScreen() {
         visible={isModalVisible}
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-          <View>
-            <Text>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>
               {isCreatingFolder ? 'Створити нову папку' : 'Створити новий файл'}
             </Text>
             <TextInput
+              style={styles.input}
               placeholder={isCreatingFolder ? 'Назва папки' : 'Назва файлу (без .txt)'}
               value={newItemName}
               onChangeText={setNewItemName}
               autoCapitalize="none"
               autoFocus={true}
             />
-            <View>
-              <TouchableOpacity onPress={() => setIsModalVisible(false)}>
-                <Text>Скасувати</Text>
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCancel]}
+                onPress={() => setIsModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Скасувати</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleCreate}>
-                <Text>Створити</Text>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalButtonCreate]}
+                onPress={handleCreate}
+              >
+                <Text style={styles.modalButtonText}>Створити</Text>
               </TouchableOpacity>
             </View>
           </View>
