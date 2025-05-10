@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,9 @@ import {
   ActivityIndicator,
   Alert,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams, Stack, useNavigation } from 'expo-router';
 import * as FileSystem from 'expo-file-system';
 import { Feather } from '@expo/vector-icons';
 
@@ -35,8 +36,6 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     paddingHorizontal: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
   },
   headerButtonText: {
     color: '#fff',
@@ -52,13 +51,30 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
+    fontFamily: Platform.OS === 'ios' ? 'Menlo' : 'monospace',
     textAlignVertical: 'top',
+  },
+  dirtyIndicator: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#f39c12',
+    borderRadius: 8,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+  },
+  dirtyIndicatorText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
 });
 
 export default function EditorScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [fileContent, setFileContent] = useState('');
+  const [originalContent, setOriginalContent] = useState('');
+  const [isDirty, setIsDirty] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { fileUri, fileName } = useLocalSearchParams<{
@@ -74,9 +90,11 @@ export default function EditorScreen() {
         setIsLoading(false);
         return;
       }
+
       try {
         const content = await FileSystem.readAsStringAsync(fileUri);
         setFileContent(content);
+        setOriginalContent(content);
         setError(null);
       } catch (err: any) {
         setError('Не вдалося прочитати файл: ' + err.message);
@@ -84,6 +102,7 @@ export default function EditorScreen() {
         setIsLoading(false);
       }
     };
+
     loadFileContent();
   }, [fileUri]);
 
@@ -92,28 +111,37 @@ export default function EditorScreen() {
       Alert.alert('Помилка', 'Немає шляху для збереження файлу.');
       return;
     }
+
     try {
       await FileSystem.writeAsStringAsync(fileUri, fileContent);
+      setOriginalContent(fileContent);
+      setIsDirty(false);
       navigation.goBack();
       Alert.alert('Успіх', 'Файл збережено!');
     } catch (err: any) {
+      console.error('Error saving file:', err);
       Alert.alert('Помилка', 'Не вдалося зберегти файл.');
     }
   }, [fileUri, fileContent, navigation]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity onPress={handleSaveFile} style={styles.headerButton}>
-          <Feather name="save" size={18} color="#fff" style={{ marginRight: 5 }} />
-          <Text style={styles.headerButtonText}>Зберегти</Text>
-        </TouchableOpacity>
+        isDirty ? (
+          <TouchableOpacity onPress={handleSaveFile} style={styles.headerButton}>
+            <Text style={styles.headerButtonText}>
+              <Feather name="save" size={18} color="#fff" style={{ marginRight: 5 }} />
+              Зберегти
+            </Text>
+          </TouchableOpacity>
+        ) : null
       ),
     });
-  }, [navigation, handleSaveFile]);
+  }, [navigation, handleSaveFile, isDirty]);
 
   const handleTextChange = (text: string) => {
     setFileContent(text);
+    setIsDirty(text !== originalContent);
   };
 
   if (isLoading) {
@@ -134,7 +162,16 @@ export default function EditorScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContentContainer}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContentContainer}
+    >
+      <Stack.Screen options={{ title: fileName || 'Редактор' }} />
+      {isDirty && (
+        <View style={styles.dirtyIndicator}>
+          <Text style={styles.dirtyIndicatorText}>Змінено</Text>
+        </View>
+      )}
       <TextInput
         style={styles.textInput}
         value={fileContent}
