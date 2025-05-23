@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItemFromCart, updateItemQuantity, clearCart } from '../store/slices/cartSlice';
+import { removeItemFromCart, updateItemQuantity } from '../store/slices/cartSlice';
 
 const CartItem = ({ item }) => {
   const dispatch = useDispatch();
@@ -20,17 +20,25 @@ const CartItem = ({ item }) => {
   return (
     <View style={styles.cartItem}>
       <Text style={styles.cartItemName}>{item.name}</Text>
-      <View style={styles.quantityContainer}>
-        <Text>Кількість: </Text>
-        <TextInput
-          style={styles.quantityInput}
-          keyboardType="numeric"
-          onChangeText={handleQuantityChange}
-          value={String(item.quantity)}
-        />
+
+      <View style={styles.cartItemBottomRow}>
+        <View style={styles.quantityContainer}>
+          <Text style={styles.quantityLabel}>Кількість:</Text>
+          <TextInput
+            style={styles.quantityInput}
+            keyboardType="numeric"
+            onChangeText={handleQuantityChange}
+            value={String(item.quantity)}
+            maxLength={3}
+          />
+        </View>
+
+        <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
       </View>
-      <Text style={styles.cartItemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
-      <Button title="Видалити" onPress={handleRemove} color="red" />
+
+      <TouchableOpacity style={styles.removeButton} onPress={handleRemove}>
+        <Text style={styles.removeButtonText}>Видалити</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -38,12 +46,11 @@ const CartItem = ({ item }) => {
 const CartScreen = ({ navigation }) => {
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
       {cartItems.length === 0 ? (
-        <Text style={styles.emptyCartText}>Кошик порожній.</Text>
+        <Text style={styles.emptyCartText}>Кошик порожній. Додайте щось!</Text>
       ) : (
         <FlatList
           data={cartItems}
@@ -55,7 +62,12 @@ const CartScreen = ({ navigation }) => {
       <View style={styles.summaryContainer}>
         <Text style={styles.totalText}>Загальна сума: ${totalAmount.toFixed(2)}</Text>
         {cartItems.length > 0 && (
-          <Button title="Оформити замовлення" onPress={() => navigation.navigate('Checkout')} />
+          <TouchableOpacity
+            style={styles.checkoutButton}
+            onPress={() => navigation.navigate('Checkout')}
+          >
+            <Text style={styles.checkoutButtonText}>Оформити замовлення</Text>
+          </TouchableOpacity>
         )}
       </View>
     </View>
@@ -65,68 +77,112 @@ const CartScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f8f8f8',
+    padding: 15,
+    backgroundColor: '#F0F4F8',
   },
   listContainer: {
     paddingBottom: 20,
   },
   cartItem: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 10,
     marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  cartItemName: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 10,
+  },
+  cartItemBottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
-  },
-  cartItemName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    flex: 2,
+    marginBottom: 10,
   },
   quantityContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    flex: 1.5,
+  },
+  quantityLabel: {
+    fontSize: 14,
+    color: '#555',
   },
   quantityInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    padding: 5,
-    width: 40,
+    borderColor: '#D0D0D0',
+    borderRadius: 6,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    width: 50,
     textAlign: 'center',
-    marginLeft: 5,
+    marginLeft: 8,
+    fontSize: 15,
+    color: '#333',
   },
   cartItemPrice: {
     fontSize: 16,
-    fontWeight: 'bold',
-    flex: 1,
-    textAlign: 'right',
+    fontWeight: '700',
+    color: '#222',
+  },
+  removeButton: {
+    backgroundColor: '#F44336',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignSelf: 'flex-end',
+  },
+  removeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 14,
   },
   summaryContainer: {
     borderTopWidth: 1,
-    borderTopColor: '#eee',
-    paddingTop: 10,
-    marginTop: 10,
+    borderTopColor: '#E0E0E0',
+    paddingTop: 20,
+    marginTop: 15,
+    backgroundColor: '#FFFFFF',
+    padding: 25,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 3,
     alignItems: 'center',
   },
   totalText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#222',
+    marginBottom: 20,
+  },
+  checkoutButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 14,
+    paddingHorizontal: 25,
+    borderRadius: 10,
+    width: '85%',
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 17,
   },
   emptyCartText: {
     fontSize: 18,
     textAlign: 'center',
-    marginTop: 50,
-    color: '#666',
+    marginTop: 80,
+    color: '#777',
+    fontWeight: '500',
   },
 });
 

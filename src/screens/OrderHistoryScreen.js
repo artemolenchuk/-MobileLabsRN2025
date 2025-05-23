@@ -5,12 +5,12 @@ import { useSelector } from 'react-redux';
 const OrderItem = ({ order }) => (
   <View style={styles.orderItem}>
     <Text style={styles.orderDate}>Дата: {order.date}</Text>
-    <Text style={styles.orderDetails}>Кількість товарів: {order.itemsCount}</Text>
-    <Text style={styles.orderTotal}>Загальна сума: ${order.totalAmount.toFixed(2)}</Text>
+    <Text style={styles.orderDetails}>Кількість товарів: <Text style={styles.orderValue}>{order.itemsCount}</Text></Text>
+    <Text style={styles.orderTotal}>Загальна сума: <Text style={styles.orderValue}>${order.totalAmount.toFixed(2)}</Text></Text>
     <Text style={styles.itemsHeader}>Деталі замовлення:</Text>
     {order.items.map((item) => (
       <Text key={item.id} style={styles.itemDetail}>
-        - {item.name} (x{item.quantity}) - ${(item.price * item.quantity).toFixed(2)}
+        • {item.name} (x{item.quantity}) - <Text style={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</Text>
       </Text>
     ))}
   </View>
@@ -23,7 +23,7 @@ const OrderHistoryScreen = () => {
     <View style={styles.container}>
       <Text style={styles.header}>Історія замовлень</Text>
       {orderHistory.length === 0 ? (
-        <Text style={styles.emptyHistoryText}>Історія замовлень порожня.</Text>
+        <Text style={styles.emptyHistoryText}>Історія замовлень порожня. Зробіть перше замовлення!</Text>
       ) : (
         <FlatList
           data={orderHistory}
@@ -39,12 +39,13 @@ const OrderHistoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f8f8f8',
+    padding: 15,
+    backgroundColor: '#F0F4F8',
   },
   header: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -52,48 +53,65 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   orderItem: {
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
+    backgroundColor: '#FFFFFF',
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 15,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1.41,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    borderLeftWidth: 5,
+    borderLeftColor: '#4CAF50',
   },
   orderDate: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: '#333',
+    marginBottom: 8,
   },
   orderDetails: {
     fontSize: 14,
     color: '#666',
     marginBottom: 3,
   },
-  orderTotal: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  orderValue: {
+    fontWeight: '600',
     color: '#333',
-    marginTop: 5,
+  },
+  orderTotal: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: '#222',
+    marginTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
+    paddingTop: 10,
   },
   itemsHeader: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
+    marginTop: 15,
+    marginBottom: 8,
+    color: '#444',
   },
   itemDetail: {
-    fontSize: 12,
+    fontSize: 13,
     marginLeft: 10,
     color: '#555',
+    marginBottom: 3,
+  },
+  itemPrice: {
+    fontWeight: '600',
+    color: '#333',
   },
   emptyHistoryText: {
     fontSize: 18,
     textAlign: 'center',
-    marginTop: 50,
-    color: '#666',
+    marginTop: 80,
+    color: '#777',
+    fontWeight: '500',
   },
 });
 
