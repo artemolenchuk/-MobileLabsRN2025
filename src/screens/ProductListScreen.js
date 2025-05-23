@@ -21,7 +21,7 @@ const ProductItem = ({ product }) => {
   );
 };
 
-const ProductListScreen = ({ navigation }) => {
+const ProductListScreen = () => {
   const products = useSelector((state) => state.products.items);
 
   return (
@@ -32,8 +32,6 @@ const ProductListScreen = ({ navigation }) => {
         renderItem={({ item }) => <ProductItem product={item} />}
         contentContainerStyle={styles.listContainer}
       />
-      <Button title="Перейти до кошика" onPress={() => navigation.navigate('Cart')} />
-      <Button title="Історія замовлень" onPress={() => navigation.navigate('OrderHistory')} />
     </View>
   );
 };

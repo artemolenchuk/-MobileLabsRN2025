@@ -2,11 +2,48 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   items: [
-    { id: '1', name: 'Смартфон X1', description: 'Потужний смартфон з чудовою камерою.', price: 999, image: 'https://via.placeholder.com/150/0000FF/FFFFFF?text=Смартфон' },
-    { id: '2', name: 'Ноутбук Pro', description: 'Легкий та швидкий ноутбук для роботи.', price: 1499, image: 'https://via.placeholder.com/150/FF0000/FFFFFF?text=Ноутбук' },
-    { id: '3', name: 'Навушники Sound', description: 'Бездротові навушники з глибоким басом.', price: 129, image: 'https://via.placeholder.com/150/00FF00/FFFFFF?text=Навушники' },
-    { id: '4', name: 'Планшет View', description: 'Великий екран для розваг та навчання.', price: 499, image: 'https://via.placeholder.com/150/FFFF00/000000?text=Планшет' },
-    { id: '5', name: 'Смарт-годинник Fit', description: 'Відстежує активність та сон.', price: 199, image: 'https://via.placeholder.com/150/FF00FF/FFFFFF?text=Годинник' },
+    {
+      id: '1',
+      name: 'Електрогітара Jackson',
+      description: 'Класична електрогітара для важкого звучання.',
+      price: 699.99,
+      image: 'https://surl.lu/rkbocb', // додай посилання
+    },
+    {
+      id: '2',
+      name: 'Акустична гітара Yamaha',
+      description: 'Чудовий вибір для початківців та професіоналів.',
+      price: 449.5,
+      image: 'https://surli.cc/aissoj', // додай посилання
+    },
+    {
+      id: '3',
+      name: 'Комплект струн Elixir Nanoweb',
+      description: 'Довговічні струни з покриттям.',
+      price: 15.0,
+      image: 'https://surl.li/jrlwws', // додай посилання
+    },
+    {
+      id: '4',
+      name: 'Гітарний комбопідсилювач Marshall',
+      description: 'Легендарний звук для репетицій та концертів.',
+      price: 299.0,
+      image: 'https://surl.li/bfterp', // додай посилання
+    },
+    {
+      id: '5',
+      name: 'Медіатори Dunlop Tortex (12 шт.)',
+      description: 'Різні товщини для комфортної гри.',
+      price: 7.5,
+      image: 'https://surl.li/lvgxrf', // додай посилання
+    },
+    {
+      id: '6',
+      name: 'Гітарний ремінь Levy\'s',
+      description: 'Надійний та зручний ремінь для гри стоячи.',
+      price: 25.99,
+      image: 'https://surl.li/rghsms', // додай посилання
+    },
   ],
 };
 

@@ -10,19 +10,24 @@ import {
   REGISTER,
 } from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import productsReducer from './slices/productsSlice';
 import cartReducer from './slices/cartSlice';
 import userReducer from './slices/userSlice';
 import ordersReducer from './slices/ordersSlice';
 
-const persistConfig = {
-  key: 'root',
+const cartPersistConfig = {
+  key: 'cart',
   storage: AsyncStorage,
-  whitelist: ['cart', 'orders'],
 };
 
-const persistedCartReducer = persistReducer(persistConfig, cartReducer);
-const persistedOrdersReducer = persistReducer(persistConfig, ordersReducer);
+const ordersPersistConfig = {
+  key: 'orders',
+  storage: AsyncStorage,
+};
+
+const persistedCartReducer = persistReducer(cartPersistConfig, cartReducer);
+const persistedOrdersReducer = persistReducer(ordersPersistConfig, ordersReducer);
 
 export const store = configureStore({
   reducer: {
